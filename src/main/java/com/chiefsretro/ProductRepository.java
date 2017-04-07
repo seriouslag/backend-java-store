@@ -3,12 +3,12 @@ package com.chiefsretro;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
-/**
- * Created by Landon on 3/19/2017.
- */
+
 public interface ProductRepository extends CrudRepository<Product, Integer> {
     Product getProductByProductId(Integer ProductId);
     Set<Product> getFirst10ByProductNameIgnoreCaseContaining(String string);
@@ -17,6 +17,5 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
     Set<Product> findTop5ByProductNameIgnoreCaseContaining(String string);
 
     //@Query("select p from Product p where lower(p.productName) like lower(?1)")
-    Set<Product> findDistinctFirst5ByProductNameLikeIgnoreCase(String string);
-
+    Set<Product> findDistinctFirst5ByProductNameLikeIgnoreCaseOrderByProductName(String string);
 }

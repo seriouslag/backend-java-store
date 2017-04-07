@@ -3,12 +3,8 @@ package com.chiefsretro;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
-/**
- * Created by Landon on 3/16/2017.
- */
 @Entity
 @Table(name = "products")
 public class Product {
