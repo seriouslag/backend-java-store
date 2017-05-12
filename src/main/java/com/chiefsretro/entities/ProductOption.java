@@ -1,12 +1,20 @@
-package com.chiefsretro;
+package com.chiefsretro.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Set;
 
 /**
  * Created by Landon on 3/21/2017.
  */
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 @Entity
 @Table(name = "product_options")
 public class ProductOption {
@@ -20,9 +28,14 @@ public class ProductOption {
 
     private Integer productQuantity;
 
+    @OneToMany(mappedBy = "productOption", fetch=FetchType.EAGER)
+    @JsonManagedReference
+    @OrderBy("productOptionImageOrder asc")
+    @SortNatural
+    private Set<ProductOptionImage> productOptionImages;
+
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    //@JoinColumn(name = "product_id")
     @JsonBackReference
     private Product product;
 
@@ -48,8 +61,12 @@ public class ProductOption {
     public Integer getProductOptionId() {
         return productOptionsId;
     }
-
     public void setProductOptionId(Integer productOptionId) {
         this.productOptionsId = productOptionId;
+    }
+
+    public Set<ProductOptionImage> getProductOptionImages() {return this.productOptionImages;}
+    public void setProductOptionImages(Set<ProductOptionImage> productOptionImages) {
+        this.productOptionImages = productOptionImages;
     }
 }
