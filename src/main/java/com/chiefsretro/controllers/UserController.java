@@ -2,6 +2,10 @@ package com.chiefsretro.controllers;
 
 import com.chiefsretro.repositories.UserRepository;
 import com.chiefsretro.entities.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +34,5 @@ public class UserController {
         System.out.println("Returning all users");
         return userRepository.getAllByOrderByUserId();
     }
-
 
 }

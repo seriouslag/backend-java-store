@@ -50,5 +50,4 @@ public class ProductController {
         Page<Product> products = productRepository.findAllByOrderByProductName(pageRequest);
         return products;
     }
-
 }
