@@ -6,11 +6,39 @@ public class Order {
 
     private String email;
     private double date;
-    private int total;
+    private long total;
     private List<DbCartItem> cart;
     private StripeToken token;
     private StripeArgs args;
     private String status;
+    private Long amount;
+    private String chargeId;
+
+    public String getOrderMessage() {
+        return orderMessage;
+    }
+
+    public void setOrderMessage(String orderMessage) {
+        this.orderMessage = orderMessage;
+    }
+
+    private String orderMessage;
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    public String getChargeId() {
+        return chargeId;
+    }
+
+    public void setChargeId(String chargeId) {
+        this.chargeId = chargeId;
+    }
 
     public String getEmail() {
         return email;
@@ -28,11 +56,11 @@ public class Order {
         this.date = date;
     }
 
-    public int getTotal() {
+    public long getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(long total) {
         this.total = total;
     }
 

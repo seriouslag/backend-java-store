@@ -1,8 +1,6 @@
 package com.chiefsretro.entities;
 
-/**
- * Created by Landon on 5/21/2017.
- */
+
 public class StripeToken {
 
     private String id;
@@ -13,7 +11,7 @@ public class StripeToken {
     private boolean livemode;
     private String type;
     private boolean used;
-    private Card card;
+    //private Card card;
 
     public String getId() {
         return id;
@@ -79,7 +77,7 @@ public class StripeToken {
         this.used = used;
     }
 
-    public Card getCard() {
+    /*public Card getCard() {
         return card;
     }
 
@@ -87,7 +85,7 @@ public class StripeToken {
         this.card = card;
     }
 
-    /*@Override
+    @Override
     public String toString() {
         return "{livemode=" + this.livemode
                 + ", created=" + this.created

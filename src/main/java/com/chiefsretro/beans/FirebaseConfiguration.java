@@ -4,7 +4,6 @@ import com.chiefsretro.services.StripeService;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
-import com.google.firebase.database.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +41,7 @@ public class FirebaseConfiguration {
                     System.out.println("Firebase is init");
 
                     StripeService stripeService = new StripeService();
-                    stripeService.setupOrderListener();
+                    stripeService.init();
 
                 } catch (IOException e) {
                     e.printStackTrace();
