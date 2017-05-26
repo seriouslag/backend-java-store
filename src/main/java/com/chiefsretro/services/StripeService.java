@@ -8,9 +8,11 @@ import com.stripe.exception.*;
 import com.stripe.model.Charge;
 import com.stripe.model.Dispute;
 import com.stripe.model.Refund;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +26,35 @@ public class StripeService {
         setupOrderListener();
     }
 
+    @Scheduled(fixedRate=300000, initialDelay=1000)
+    public void maintenance() {
+        System.out.println(new Date(System.currentTimeMillis()) + " Starting maintenance");
+        orderCheck();
+    }
+
+
+    public void orderCheck() {
+        Stripe.apiKey = "sk_test_d2dFpCbIu2GxhtDpP240KhNs";
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("orders/");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    requestOrderProcessing(child);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void setupOrderListener() {
         Stripe.apiKey = "sk_test_d2dFpCbIu2GxhtDpP240KhNs";
+        database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("orders/");
         ref.addChildEventListener(new ChildEventListener() {
 
@@ -60,7 +89,7 @@ public class StripeService {
             disputeUpdates.put(dispute.getCharge(), dispute);
             ref.setValue(disputeUpdates);
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -72,7 +101,7 @@ public class StripeService {
             refundUpdates.put(refund.getCharge(), refund);
             ref.setValue(refundUpdates);
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -175,7 +204,7 @@ public class StripeService {
                     }
                 }
             } catch(Exception e) {
-                System.out.println(e);
+                e.printStackTrace();
             }
         }
     }

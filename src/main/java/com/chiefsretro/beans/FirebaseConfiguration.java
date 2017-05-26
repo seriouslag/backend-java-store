@@ -4,9 +4,11 @@ import com.chiefsretro.services.StripeService;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
+import com.stripe.Stripe;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,40 +18,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@ComponentScan
 public class FirebaseConfiguration {
     @Bean
     public FirebaseApp firebaseAppConfig() {
-        ClassLoader classLoader = getClass().getClassLoader();
         try {
-            File file = new File(classLoader.getResource("firebase.json").getFile());
-            try {
-                FileInputStream serviceAccount = new FileInputStream(file);
+            ClassPathResource cpr = new ClassPathResource("firebase.json");
 
-                // Initialize the app with a custom auth variable, limiting the server's access
-                Map<String, Object> auth = new HashMap<String, Object>();
-                auth.put("uid", "backend-service-worker");
+            // Initialize the app with a custom auth variable, limiting the server's access
+            Map<String, Object> auth = new HashMap<String, Object>();
+            auth.put("uid", "backend-service-worker");
 
-                try {
-                    FirebaseOptions options = new FirebaseOptions.Builder()
-                            .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-                            .setDatabaseUrl("https://chiefsretro-163916.firebaseio.com")
-                            .setDatabaseAuthVariableOverride(auth)
-                            .build();
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredential(FirebaseCredentials.fromCertificate(cpr.getInputStream()))
+                    .setDatabaseUrl("https://chiefsretro-163916.firebaseio.com")
+                    .setDatabaseAuthVariableOverride(auth)
+                    .build();
 
-                    FirebaseApp.initializeApp(options);
-                    System.out.println("Firebase is init");
+            Stripe.setConnectTimeout(30*1000);
+            Stripe.setReadTimeout(80*1000);
 
-                    StripeService stripeService = new StripeService();
-                    stripeService.init();
+            FirebaseApp.initializeApp(options);
+            System.out.println("Firebase is init");
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } catch (NullPointerException e) {
+            StripeService stripeService = new StripeService();
+            stripeService.init();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
