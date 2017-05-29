@@ -32,14 +32,14 @@ public class ipFilter extends OncePerRequestFilter{
         String ipAddress = httpServletRequest.getRemoteAddr();
         int port = httpServletRequest.getLocalPort();
 
-        if(isAllowedDomain(ipAddress, port)) {
+        if(isAllowedIp(ipAddress, port)) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } else {
             httpServletResponse.sendError(403, "Not a valid Domain");
         }
     }
 
-    private boolean isAllowedDomain(String ipAddress, int port) {
+    private boolean isAllowedIp(String ipAddress, int port) {
         for(String ip : allowedIps) {
             if(ip.equals(ipAddress)) {
                 return true;
