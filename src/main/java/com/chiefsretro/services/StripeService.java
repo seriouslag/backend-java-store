@@ -8,53 +8,24 @@ import com.stripe.exception.*;
 import com.stripe.model.Charge;
 import com.stripe.model.Dispute;
 import com.stripe.model.Refund;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Nullable;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class StripeService {
 
-    private FirebaseDatabase database;
+    private static FirebaseDatabase database;
 
-    public void init() {
+    public static void init() {
+        Stripe.apiKey = "sk_test_d2dFpCbIu2GxhtDpP240KhNs";
         database = FirebaseDatabase.getInstance();
         setupOrderListener();
+        System.out.println("Stripe is init");
     }
 
-    @Scheduled(fixedRate=300000, initialDelay=1000)
-    public void maintenance() {
-        System.out.println(new Date(System.currentTimeMillis()) + " Starting maintenance");
-        orderCheck();
-    }
-
-
-    public void orderCheck() {
-        Stripe.apiKey = "sk_test_d2dFpCbIu2GxhtDpP240KhNs";
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("orders/");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot child: dataSnapshot.getChildren()) {
-                    requestOrderProcessing(child);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void setupOrderListener() {
-        Stripe.apiKey = "sk_test_d2dFpCbIu2GxhtDpP240KhNs";
-        database = FirebaseDatabase.getInstance();
+    private static void setupOrderListener() {
         DatabaseReference ref = database.getReference("orders/");
         ref.addChildEventListener(new ChildEventListener() {
 
@@ -77,15 +48,12 @@ public class StripeService {
             @Override
             public void onCancelled(DatabaseError databaseError){ }
         });
-
-        System.out.println("Firebase DB Is init");
     }
 
     public void createDispute(Dispute dispute) {
-        database = FirebaseDatabase.getInstance();
         try {
             DatabaseReference ref = database.getReference("disputes/");
-            Map<String, Object> disputeUpdates = new HashMap<String, Object>();
+            Map<String, Object> disputeUpdates = new HashMap<>();
             disputeUpdates.put(dispute.getCharge(), dispute);
             ref.setValue(disputeUpdates);
         } catch (Exception e) {
@@ -94,10 +62,9 @@ public class StripeService {
     }
 
     public void createRefund(Refund refund) {
-        database = FirebaseDatabase.getInstance();
         try {
             DatabaseReference ref = database.getReference("refunds/");
-            Map<String, Object> refundUpdates = new HashMap<String, Object>();
+            Map<String, Object> refundUpdates = new HashMap<>();
             refundUpdates.put(refund.getCharge(), refund);
             ref.setValue(refundUpdates);
         } catch (Exception e) {
@@ -106,8 +73,6 @@ public class StripeService {
     }
 
     public void changeOrderStatus(String chargeId, String status, @Nullable String message) {
-        database = FirebaseDatabase.getInstance();
-
         try {
             DatabaseReference ref = database.getReference("charges/" + chargeId);
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -116,17 +81,15 @@ public class StripeService {
                     MyCharge myCharge = dataSnapshot.getValue(MyCharge.class);
                     DatabaseReference orderRef = database.getReference("orders/" + myCharge.getId() + "/" + myCharge.getOrderId());
                     if(myCharge.getId() != null && myCharge.getOrderId() != null) {
-                        Map<String, Object> orderParams = new HashMap<String, Object>();
+                        Map<String, Object> orderParams = new HashMap<>();
                         orderParams.put("status", status);
                         orderParams.put("orderMessage", message);
                         orderRef.updateChildren(orderParams);
 
-                        Map<String, Object> params = new HashMap<String, Object>();
+                        Map<String, Object> params = new HashMap<>();
                         params.put("status", status);
 
                         ref.updateChildren(params);
-                    } else {
-                        //add a log
                     }
                 }
                 @Override
@@ -135,11 +98,11 @@ public class StripeService {
             });
 
         } catch(Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
-    private void requestOrderProcessing(DataSnapshot dataSnapshot) {
+    static void requestOrderProcessing(DataSnapshot dataSnapshot) {
         for(DataSnapshot child : dataSnapshot.getChildren()) {
             try {
                 Order order = child.getValue(Order.class);
@@ -147,7 +110,7 @@ public class StripeService {
                 if(order.getStatus().equals("processing")) {
                     System.out.println("Attempting to process");
 
-                    Map<String, Object> params = new HashMap<String, Object>();
+                    Map<String, Object> params = new HashMap<>();
                     params.put("amount", order.getTotal());
                     params.put("currency", "usd");
                     params.put("source", order.getToken().getId());
@@ -159,7 +122,7 @@ public class StripeService {
 
                         if(dataSnapshot.getKey() != null && child.getKey() != null) {
                             DatabaseReference childref = database.getReference("orders/" + dataSnapshot.getKey() + "/" + child.getKey());
-                            Map<String, Object> childUpdates = new HashMap<String, Object>();
+                            Map<String, Object> childUpdates = new HashMap<>();
                             childUpdates.put("status", "processed");
                             childUpdates.put("chargeId", charge.getId());
                             childUpdates.put("amount", charge.getAmount());
@@ -167,7 +130,7 @@ public class StripeService {
                             childref.updateChildren(childUpdates);
 
                             DatabaseReference chargeRef = database.getReference("charges/" + charge.getId());
-                            Map<String, Object> chargeUpdates = new HashMap<String, Object>();
+                            Map<String, Object> chargeUpdates = new HashMap<>();
                             chargeUpdates.put("status", "waiting");
                             chargeUpdates.put("id", dataSnapshot.getKey());
                             chargeUpdates.put("orderId", child.getKey());
@@ -208,6 +171,4 @@ public class StripeService {
             }
         }
     }
-
-
 }
