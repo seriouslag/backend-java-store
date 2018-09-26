@@ -22,3 +22,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+src/main/resources/firebase*.json
+src/main/resources/application.properties
