@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @Configuration
-public class LogginBean {
+public class LoggingBean {
 
     @Bean
     public Filter loggingFilter() {
         return new AbstractRequestLoggingFilter() {
             private final Logger log = LoggerFactory
-                    .getLogger(LogginBean.class);
+                    .getLogger(LoggingBean.class);
 
             {
                 setIncludeClientInfo(true);
