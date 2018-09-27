@@ -11,13 +11,13 @@ import java.util.Set;
 
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Integer> {
-    Product getProductByProductId(Integer ProductId);
-    Set<Product> findDistinctFirst5ByProductNameLikeIgnoreCaseOrderByProductName(String string);
-    Set<Product> findAllByOrderByProductName();
-    Page<Product> findAllByOrderByProductName(Pageable page);
+    Product getProductById(Integer ProductId);
+    Set<Product> findDistinctFirst5ByNameLikeIgnoreCaseOrderByName(String string);
+    Set<Product> findAllByOrderByName();
+    Page<Product> findAllByOrderByName(Pageable page);
     Product save(Product product);
-    Product findFirstByProductName(String name);
-    boolean existsProductByProductId(int id);
+    Product findFirstByName(String name);
+    boolean existsProductById(int id);
     @Transactional
-    int deleteProductByProductId(int id);
+    int deleteProductById(int id);
 }

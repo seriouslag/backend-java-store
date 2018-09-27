@@ -8,50 +8,27 @@ public class Rating {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "rating_id", updatable = false, nullable = false)
-    private int ratingId;
-    private String ratingTitle;
-    private String ratingMessage;
-    private double ratingValue;
-    private int ratingTimestamp;
+    @Column(name = "id", updatable = false, nullable = false)
+    private int id;
+    private String title;
+    private String message;
+    private double value;
+    private int timestamp;
 
-    public int getRatingTimestamp() {
-        return ratingTimestamp;
-    }
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public void setRatingTimestamp(int ratingTimestamp) {
-        this.ratingTimestamp = ratingTimestamp;
-    }
-
-    public int getRatingId() {
-        return ratingId;
-    }
-
-    public void setRatingId(int ratingId) {
-        this.ratingId = ratingId;
-    }
-
-    public String getRatingTitle() {
-        return ratingTitle;
-    }
-
-    public void setRatingTitle(String ratingTitle) {
-        this.ratingTitle = ratingTitle;
-    }
-
-    public String getRatingMessage() {
-        return ratingMessage;
-    }
-
-    public void setRatingMessage(String ratingMessage) {
-        this.ratingMessage = ratingMessage;
-    }
-
-    public double getRatingValue() {
-        return ratingValue;
-    }
-
-    public void setRatingValue(double ratingValue) {
-        this.ratingValue = ratingValue;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+    public double getValue() { return value; }
+    public void setValue(double value) { this.value = value; }
+    public int getTimestamp() { return timestamp; }
+    public void setTimestamp(int timestamp) { this.timestamp = timestamp; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }

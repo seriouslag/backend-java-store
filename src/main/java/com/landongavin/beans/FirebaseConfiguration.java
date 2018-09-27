@@ -26,20 +26,14 @@ public class FirebaseConfiguration {
             Map<String, Object> auth = new HashMap<>();
             auth.put("uid", "backend-service-worker");
 
-            Resource resource = new ClassPathResource("firebaseKey.json");
+            Resource resource = new ClassPathResource("firebase.json");
             FileInputStream serviceAccount = new FileInputStream(resource.getFile());
-
-//            FirebaseOptions options = new FirebaseOptions.Builder()
-//                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-//                    .setDatabaseUrl("https://chiefsretro-163916.firebaseio.com")
-//                    .setDatabaseAuthVariableOverride(auth)
-//                    .build();
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setDatabaseUrl("https://surruh-ed451.firebaseio.com")
+                    .setDatabaseAuthVariableOverride(auth)
                     .build();
-
 
             FirebaseApp.initializeApp(options);
             System.out.println("Firebase default is init");

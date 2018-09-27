@@ -20,9 +20,9 @@ public class StripeService {
 
     public static void init() {
         Stripe.apiKey = "sk_test_d2dFpCbIu2GxhtDpP240KhNs";
+        System.out.println("Stripe is init");
         database = FirebaseDatabase.getInstance();
         setupOrderListener();
-        System.out.println("Stripe is init");
     }
 
     private static void setupOrderListener() {

@@ -1,22 +1,34 @@
 package com.landongavin.entities;
 
-import com.stripe.model.Address;
-
 import javax.persistence.*;
 import java.util.Set;
 
+@Entity
 @Table(name="users")
 public class User {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long userId;
-    private String userEmail;
-    private String userName;
-    private Address[] userAddresses;
+    private long id;
+    private String email;
+    private String name;
+    private String stripeCustomerId;
 
-    @ManyToOne(fetch= FetchType.EAGER)
-    @JoinColumn(name = "rating_id", insertable = false, updatable = false)
-    private Set<Rating> userRatings;
+    @ManyToMany(fetch= FetchType.LAZY)
+    @JoinTable(name = "user_addresses",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "address_id")}
+    )
+    private Set<Address> address;
 
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getStripeCustomerId() { return stripeCustomerId; }
+    public void setStripeCustomerId(String stripeCustomerId) { this.stripeCustomerId = stripeCustomerId; }
+    public Set<Address> getAddress() { return address; }
+    public void setAddress(Set<Address> address) { this.address = address; }
 }

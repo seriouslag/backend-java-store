@@ -20,12 +20,12 @@ public class AdminController {
             // TODO throw error response;
             return "You are not an admin.";
         }
-        if (productRepository.findFirstByProductName(product.getProductName()) != null) {
-            return "A product with a name of " + product.getProductName() + " already exists.";
+        if (productRepository.findFirstByName(product.getName()) != null) {
+            return "A product with a name of " + product.getName() + " already exists.";
         }
 
         productRepository.save(product);
-        return "Added product " + product.getProductName();
+        return "Added product " + product.getName();
     }
 
     @PutMapping("/product/{id}")
@@ -34,15 +34,15 @@ public class AdminController {
             // TODO throw error response;
             return "You are not an admin.";
         }
-        if(product.getProductId() != id) {
+        if(product.getId() != id) {
             return "Product id of supplied product does not match path id";
         }
-        if (productRepository.existsProductByProductId(id) == false) {
+        if (productRepository.existsProductById(id) == false) {
             return "A product with an id of " + id + " doesn't exist.";
         }
 
         productRepository.save(product);
-        return "Updated product " + product.getProductName();
+        return "Updated product " + product.getName();
     }
 
     @Transactional
@@ -52,11 +52,11 @@ public class AdminController {
             // TODO throw error response;
             return "You are not an admin.";
         }
-        if (productRepository.existsProductByProductId(id) == false) {
+        if (productRepository.existsProductById(id) == false) {
             return "A product with an id of " + id + " doesn't exist.";
         }
 
-        productRepository.deleteProductByProductId(id);
+        productRepository.deleteProductById(id);
         return "Deleted product with id of " + id;
     }
 

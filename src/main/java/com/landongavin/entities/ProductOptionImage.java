@@ -1,45 +1,43 @@
 package com.landongavin.entities;
 
+import com.fasterxml.jackson.annotation.*;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "product_option_images")
 public class ProductOptionImage {
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int productOptionImageId;
-
-    private String productOptionImageLocation;
-
+    private int id;
+    private String location;
     private boolean hasThumb;
+    private int order;
 
-    private int productOptionImageOrder;
-
-    @ManyToOne(fetch= FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_options_id", insertable = false, updatable = false)
-    //@JsonManagedReference
-    private ProductOption productOption;
+    @JsonIgnore
+    private ProductOption option;
 
-    public ProductOption getProductOption() {return this.productOption;}
-    public void setProductOption(ProductOption productOption) {
-        this.productOption = productOption;
+    public int getId() {
+        return id;
     }
-
-    public int getProductOptionImageId() {return this.productOptionImageId;}
-    public void setProductOptionImageId(int productOptionImageId) {
-        this.productOptionImageId = productOptionImageId;
+    public void setId(int id) {
+        this.id = id;
     }
-
-    public String getProductOptionImageLocation() {return this.productOptionImageLocation;}
-    public void setProductOptionImageLocation(String productOptionImageLocation) {
-        this.productOptionImageLocation = productOptionImageLocation;
+    public String getLocation() {
+        return location;
     }
-
-    public boolean getHasThumb() {return this.hasThumb;}
-    public void setHasThumb(boolean hasThumb) {
-        this.hasThumb = hasThumb;
+    public void setLocation(String location) {
+        this.location = location;
     }
-
-    public int getProductOptionImageOrder() {return this.productOptionImageOrder;}
-    public void setProductOptionImageOrder(int productOptionImageOrder) {this.productOptionImageOrder = productOptionImageOrder;}
+    public boolean getHasThumb() {
+        return this.hasThumb;
+    }
+    public void setHasThumb(boolean hasThumb) { this.hasThumb = hasThumb; }
+    public int getOrder() { return order; }
+    public void setOrder(int order) { this.order = order; }
+    public ProductOption getProductOption() { return option; }
+    public void setProductOption(ProductOption option) { this.option = option; }
 }
