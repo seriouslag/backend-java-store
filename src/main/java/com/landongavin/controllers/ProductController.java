@@ -1,6 +1,7 @@
 package com.landongavin.controllers;
 
 import com.landongavin.entities.Exceptions.NotFoundException;
+import com.landongavin.entities.SearchProduct;
 import com.landongavin.repositories.ProductOptionRepository;
 import com.landongavin.repositories.ProductRepository;
 import com.landongavin.entities.Product;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = {"http://seriouslag.com:80", "http://seriouslag.com", "http://seriouslag.com:4200", "http://localhost:4200", "http://landongavin.com", "http://localhost:8080"})
@@ -54,5 +56,20 @@ public class ProductController {
         PageRequest pageRequest = PageRequest.of(pageNum, itemsPerPage);
         Page<Product> products = productRepository.findAllByOrderByName(pageRequest);
         return products;
+    }
+
+    @GetMapping("/test/search")
+    public Set<SearchProduct> Search(@RequestParam("productName") String productName) {
+        Set<Product> products = Product(productName);
+        return products.stream().map(product -> {
+            SearchProduct sp = new SearchProduct();
+            sp.setDescription(product.getDescription());
+            sp.setName(product.getName());
+            sp.setId(product.getId());
+            sp.setDefaultImage(product.getDefaultImageUrl());
+
+            return sp;
+        }).collect(Collectors.toSet());
+
     }
 }
