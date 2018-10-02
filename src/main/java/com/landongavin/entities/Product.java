@@ -1,15 +1,8 @@
 package com.landongavin.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jdk.nashorn.internal.runtime.options.Option;
-
 import javax.persistence.*;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "products")
@@ -33,14 +26,18 @@ public class Product {
     public void setDescription(String description) { this.description = description; }
 
     public String getDefaultImageUrl() {
-        String location = this.options.stream()
-                .map(option -> {
-                    Optional<ProductOptionImage> firstImage = option.getImages().stream().filter(image -> !image.getLocation().equals("")).findFirst();
-                     if (firstImage.isPresent()) {
-                         return firstImage.get().getLocation();
-                     }
-                     return "";
-                }).findFirst().get();
-        return location;
+        Optional<String> firstOptionWithLocation = this.options.stream()
+                .map(productOption -> {
+                   Optional<String> location = productOption.getImages().stream()
+                            .filter(currentImage -> !currentImage.getLocation().equals(""))
+                            .findFirst()
+                            .map(ProductOptionImage::getLocation);
+
+                    return location.orElse("");
+
+                }).findFirst();
+
+        return firstOptionWithLocation.orElse("");
+
     }
 }
