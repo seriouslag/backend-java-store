@@ -18,11 +18,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    private final ProductOptionRepository productOptionRepository;
 
     @Autowired
-    private ProductOptionRepository productOptionRepository;
+    public ProductController(ProductRepository productRepository, ProductOptionRepository productOptionRepository) {
+        this.productRepository = productRepository;
+        this.productOptionRepository = productOptionRepository;
+    }
 
     @GetMapping("/product/{id}")
     public Product Product(@PathVariable("id") int id) {

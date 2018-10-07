@@ -1,7 +1,6 @@
 package com.landongavin.entities;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name="users")
@@ -13,13 +12,14 @@ public class User {
     private String email;
     private String name;
     private String stripeCustomerId;
+    private String firebaseUid;
 
-    @ManyToMany(fetch= FetchType.LAZY)
-    @JoinTable(name = "user_addresses",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "address_id")}
-    )
-    private Set<Address> address;
+//    @ManyToMany(fetch= FetchType.LAZY)
+//    @JoinTable(name = "user_addresses",
+//            joinColumns = { @JoinColumn(name = "user_id") },
+//            inverseJoinColumns = { @JoinColumn(name = "address_id")}
+//    )
+//    private Set<Address> address;
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
@@ -29,6 +29,8 @@ public class User {
     public void setName(String name) { this.name = name; }
     public String getStripeCustomerId() { return stripeCustomerId; }
     public void setStripeCustomerId(String stripeCustomerId) { this.stripeCustomerId = stripeCustomerId; }
-    public Set<Address> getAddress() { return address; }
-    public void setAddress(Set<Address> address) { this.address = address; }
+//    public Set<Address> getAddress() { return address; }
+//    public void setAddress(Set<Address> address) { this.address = address; }
+    public String getFirebaseUid() { return firebaseUid; }
+    public void setFirebaseUid(String firebaseUid) { this.firebaseUid = firebaseUid; }
 }
