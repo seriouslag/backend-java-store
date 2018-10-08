@@ -25,6 +25,10 @@ public class ProductOption {
     @SortNatural
     private Set<ProductOptionImage> images;
 
+    @OneToMany(mappedBy = "option", fetch=FetchType.EAGER)
+    @SortNatural
+    private Set<ProductSuboption> suboptions;
+
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     @JsonIgnore
@@ -40,7 +44,8 @@ public class ProductOption {
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
-    public Set<ProductOptionImage> getImages() {
-        return images;
-    }
+    public Set<ProductOptionImage> getImages() { return images; }
+    public Set<ProductSuboption> getSuboptions() { return suboptions; }
+    public void setImages(Set<ProductOptionImage> images) { this.images = images; }
+    public void setSuboptions(Set<ProductSuboption> suboptions) {this.suboptions = suboptions; }
 }
