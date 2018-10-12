@@ -1,6 +1,6 @@
 package com.landongavin.controllers;
 
-import com.landongavin.entities.Exceptions.NotFoundException;
+import com.landongavin.entities.Exceptions.NotFound;
 import com.landongavin.entities.SearchProduct;
 import com.landongavin.repositories.ProductOptionRepository;
 import com.landongavin.repositories.ProductRepository;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = {"http://seriouslag.com:80", "http://seriouslag.com", "http://seriouslag.com:4200", "http://localhost:4200", "http://landongavin.com", "http://localhost:8080"})
+@CrossOrigin
 @RequestMapping("/api")
 public class ProductController {
 
@@ -35,7 +35,7 @@ public class ProductController {
         if(product != null && product.getName() != null) {
             System.out.println("Returning: " + product.getName());
         } else {
-            throw new NotFoundException("The product of id " + id + " was not found.");
+            throw new NotFound("The product of id " + id + " was not found.");
         }
         return product;
     }

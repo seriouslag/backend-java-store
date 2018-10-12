@@ -24,4 +24,6 @@ nbdist/
 .nb-gradle/
 
 src/main/resources/firebase*
-src/main/resources/application.properties
+src/main/resources/*.properties
+
+*.jar

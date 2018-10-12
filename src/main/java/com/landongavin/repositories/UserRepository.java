@@ -14,8 +14,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     User getUserById(long userId);
     Set<User> findFirst50ByNameLikeIgnoreCase(String string);
     Set<User> findAllUserByName(String string);
-    Set<User> findAllUser();
-    Page<User> findAllByUser(Pageable page);
+    Set<User> findAll();
+    //Page<User> findAllByUser(Pageable page);
     User save(User user);
     boolean existsUserById(long id);
     @Transactional

@@ -42,7 +42,8 @@ public class FirebaseService {
         //orderCheck();
     }
 
-    private static void orderCheck() {
+    private void orderCheck() {
+        System.out.println("Here");
         database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("orders/");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {

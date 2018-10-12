@@ -9,10 +9,9 @@ import com.stripe.Stripe;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,11 +25,10 @@ public class FirebaseConfiguration {
             Map<String, Object> auth = new HashMap<>();
             auth.put("uid", "backend-service-worker");
 
-            Resource resource = new ClassPathResource("firebase.json");
-            FileInputStream serviceAccount = new FileInputStream(resource.getFile());
+            InputStream is = new ClassPathResource("firebase.json").getInputStream();
 
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(GoogleCredentials.fromStream(is))
                     .setDatabaseUrl("https://surruh-ed451.firebaseio.com")
                     .setDatabaseAuthVariableOverride(auth)
                     .build();
