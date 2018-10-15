@@ -4,21 +4,29 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.landongavin.services.FirebaseService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Configuration
+@Component
+@DependsOn("FirebaseAppConfig")
 public class JwtFilter extends OncePerRequestFilter {
 
     private static boolean checkAuth = false;
+    private FirebaseService firebaseService;
+
+    @Autowired
+    public JwtFilter(FirebaseService firebaseService) {
+        this.firebaseService = firebaseService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -54,7 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 String uid = decodedToken.getUid();
                 request.setAttribute("uid", uid);
 
-                FirebaseService.addListenerForUserRole(uid, value -> {
+                firebaseService.addListenerForUserRole(uid, value -> {
                     try {
                         request.setAttribute("role", value);
                         filterChain.doFilter(request, response);
@@ -74,5 +82,4 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
     }
-
 }

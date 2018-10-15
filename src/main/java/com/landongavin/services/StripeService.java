@@ -3,6 +3,7 @@ package com.landongavin.services;
 import com.landongavin.entities.MyCharge;
 import com.landongavin.entities.Order;
 import com.google.firebase.database.*;
+import com.landongavin.services.Interfaces.IStripeService;
 import com.stripe.Stripe;
 import com.stripe.exception.*;
 import com.stripe.model.Charge;
@@ -14,18 +15,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class StripeService {
+public class StripeService implements IStripeService {
 
     private static FirebaseDatabase database;
 
-    public static void init() {
+    public StripeService() {
+
+    }
+
+    public void init() {
         Stripe.apiKey = "sk_test_d2dFpCbIu2GxhtDpP240KhNs";
         System.out.println("Stripe is init");
         database = FirebaseDatabase.getInstance();
         setupOrderListener();
     }
 
-    private static void setupOrderListener() {
+    private void setupOrderListener() {
         DatabaseReference ref = database.getReference("orders/");
         ref.addChildEventListener(new ChildEventListener() {
 
@@ -50,7 +55,7 @@ public class StripeService {
         });
     }
 
-    public static void createDispute(Dispute dispute) {
+    public void createDispute(Dispute dispute) {
         try {
             DatabaseReference ref = database.getReference("disputes/");
             Map<String, Object> disputeUpdates = new HashMap<>();
@@ -61,7 +66,7 @@ public class StripeService {
         }
     }
 
-    public static void createRefund(Refund refund) {
+    public void createRefund(Refund refund) {
         try {
             DatabaseReference ref = database.getReference("refunds/");
             Map<String, Object> refundUpdates = new HashMap<>();
@@ -72,7 +77,7 @@ public class StripeService {
         }
     }
 
-    public static void changeOrderStatus(String chargeId, String status, @Nullable String message) {
+    public void changeOrderStatus(String chargeId, String status, @Nullable String message) {
         try {
             DatabaseReference ref = database.getReference("charges/" + chargeId);
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -102,7 +107,7 @@ public class StripeService {
         }
     }
 
-    static void requestOrderProcessing(DataSnapshot dataSnapshot) {
+    public void requestOrderProcessing(DataSnapshot dataSnapshot) {
         for(DataSnapshot child : dataSnapshot.getChildren()) {
             try {
                 Order order = child.getValue(Order.class);

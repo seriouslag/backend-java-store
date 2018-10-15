@@ -27,3 +27,6 @@ src/main/resources/firebase*
 src/main/resources/*.properties
 
 *.jar
+
+application*.properties
+stripe.json

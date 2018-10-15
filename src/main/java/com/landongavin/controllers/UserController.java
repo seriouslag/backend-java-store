@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final FirebaseService firebaseService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, FirebaseService firebaseService) {
         this.userRepository = userRepository;
+        this.firebaseService = firebaseService;
     }
 
     @GetMapping("/user/{id}")
@@ -40,7 +42,7 @@ public class UserController {
             throw new BadModel("No firebase uid included.");
         }
 
-        if (FirebaseService.firebaseUserExists(user.getFirebaseUid()) == false) {
+        if (firebaseService.firebaseUserExists(user.getFirebaseUid()) == false) {
             throw new NotFound("Firebase user not found.");
         }
 

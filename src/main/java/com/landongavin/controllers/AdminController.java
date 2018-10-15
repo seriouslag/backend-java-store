@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final ProductRepository productRepository;
-    private final UserController userController;
+    private final UserRepository userRepository;
+    private final FirebaseService firebaseService;
 
     @Autowired
-    public AdminController(ProductRepository productRepository, UserRepository userRepository) {
+    public AdminController(ProductRepository productRepository, UserRepository userRepository, FirebaseService firebaseService) {
         this.productRepository = productRepository;
-        this.userController = new UserController(userRepository);
+        this.userRepository = userRepository;
+        this.firebaseService = firebaseService;
     }
 
     @PostMapping("/addadmin")
@@ -33,7 +35,7 @@ public class AdminController {
             // TODO throw error response;
             throw new NotAuthorized("by " + uid);
         }
-        User user = userController.User(id);
+        User user = userRepository.getUserById(id);
         if (user == null) {
             throw new NotFoundException("User of id " + id + " was not found.");
         }
@@ -42,7 +44,7 @@ public class AdminController {
             throw new UserExistsButIsNotAFirebaseUser("User of id: " + id + " is not in the firebase database but is saved in the local database. :(");
         }
 
-        return FirebaseService.addRoleToFirebaseUser(user.getFirebaseUid(), "admin");
+        return firebaseService.addRoleToFirebaseUser(user.getFirebaseUid(), "admin");
     }
 
     @PostMapping("/product")

@@ -3,12 +3,22 @@ package com.landongavin.controllers;
 import com.landongavin.services.StripeService;
 import com.stripe.model.*;
 import com.stripe.net.ApiResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/stripe")
 public class StripeController {
+
+    private final StripeService stripeService;
+
+    @Autowired
+    public StripeController(StripeService stripeService) {
+        this.stripeService = stripeService;
+    }
+
+
     @PostMapping("/webhookEndpoint")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -54,50 +64,50 @@ public class StripeController {
                     chargeId = ((Dispute) event.getData().getObject()).getCharge();
                     message = "This order was disputed and closed";
                     status = "disputed_closed";
-                    StripeService.createDispute((Dispute) event.getData().getObject());
+                    stripeService.createDispute((Dispute) event.getData().getObject());
                     break;
                 case "charge.dispute.opened":
                     chargeId = ((Dispute) event.getData().getObject()).getCharge();
                     message = "This order is disputed";
                     status = "disputed_open";
-                    StripeService.createDispute((Dispute) event.getData().getObject());
+                    stripeService.createDispute((Dispute) event.getData().getObject());
                     break;
                 case "charge.dispute.created":
                     chargeId = ((Dispute) event.getData().getObject()).getCharge();
                     message = "This order is disputed";
                     status = "disputed_created";
-                    StripeService.createDispute((Dispute) event.getData().getObject());
+                    stripeService.createDispute((Dispute) event.getData().getObject());
                     break;
                 case "charge.dispute.funds_reinstated":
                     chargeId = ((Dispute) event.getData().getObject()).getCharge();
                     message = "Payment Successful/Disputed/Closed";
                     status = "disputed_closed";
-                    StripeService.createDispute((Dispute) event.getData().getObject());
+                    stripeService.createDispute((Dispute) event.getData().getObject());
                     break;
                 case "charge.dispute.funds_withdrawn":
                     chargeId = ((Dispute) event.getData().getObject()).getCharge();
                     message = "Order cancelled/Payment returned";
                     status = "disputed_closed_lost";
-                    StripeService.createDispute((Dispute) event.getData().getObject());
+                    stripeService.createDispute((Dispute) event.getData().getObject());
                     break;
                 case "charge.dispute.updated":
                     chargeId = ((Dispute) event.getData().getObject()).getCharge();
                     message = "This order is disputed";
                     status = "disputed_updated";
-                    StripeService.createDispute((Dispute) event.getData().getObject());
+                    stripeService.createDispute((Dispute) event.getData().getObject());
                     break;
                 case "charge.refund.updated":
                     chargeId = ((Refund) event.getData().getObject()).getCharge();
                     message = "This order was refunded";
                     status = "refunded";
-                    StripeService.createRefund((Refund) event.getData().getObject());
+                    stripeService.createRefund((Refund) event.getData().getObject());
                     break;
             }
 
             System.out.println(message);
 
             if (message != null) {
-                StripeService.changeOrderStatus(chargeId, status, message);
+                stripeService.changeOrderStatus(chargeId, status, message);
             }
 
 

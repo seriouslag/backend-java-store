@@ -1,7 +1,5 @@
 package com.landongavin.beans;
 
-import com.landongavin.services.FirebaseService;
-import com.landongavin.services.StripeService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -38,8 +36,6 @@ public class FirebaseConfiguration {
 
             Stripe.setConnectTimeout(30*1000);
             Stripe.setReadTimeout(80*1000);
-            StripeService.init();
-            FirebaseService.init();
 
         } catch (IOException e) {
             e.printStackTrace();
